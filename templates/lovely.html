@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valtech</title>
+    <style>
+        /* General styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffe4e1; /* Light pink */
+            color: #ff69b4; /* Bright pink */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        /* Falling hearts animation */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff69b4;
+            clip-path: polygon(50% 0%, 100% 35%, 85% 100%, 50% 75%, 15% 100%, 0% 35%);
+            animation: fall 5s linear infinite, sway 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sway {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(30px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dear {{ lover }}</h1>
+        <p id="message">Loading...</p>
+        <h2>From {{ host }}</h2>
+        <p>Website Created by <a href="https://github.com/sortira">Aritro 'sortira' Shome</a></p>
+    </div>
+
+    <script>
+        // JavaScript logic to fetch message from the server
+        const messageElement = document.getElementById("message");
+
+        // Get today's date and format it as YYYY-MM-DD
+        const today = new Date();
+        let formattedDate = today.toISOString().split('T')[0]; // e.g., "2024-02-14"
+        // Fetch the message from the server
+        fetch(`/day?date=${formattedDate}&lover={{ lover }}`)
+            .then(response => response.json())
+            .then(data => {
+                // Update the message with the server response
+                messageElement.textContent = data.message || "Unable to fetch the message.";
+            })
+            .catch(() => {
+                messageElement.textContent = "There was an error fetching your Valentine's message. Please try again later.";
+            });
+    </script>
+</body>
+</html>
